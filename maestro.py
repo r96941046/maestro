@@ -54,11 +54,13 @@ class Maestro():
         self.l_calculate_time.grid(row=6, column=1)
 
         tk.Label(self.window, text="Price subsets").grid(row=7, column=0)
-        self.l_price_subsets = tk.Label(self.window, text="")
+        self.s_price_subsets = tk.StringVar()
+        self.l_price_subsets = tk.Entry(self.window, text=self.s_price_subsets)
         self.l_price_subsets.grid(row=7, column=1)
 
         tk.Label(self.window, text="Invoice subsets").grid(row=8, column=0)
-        self.l_invoice_subsets = tk.Label(self.window, text="")
+        self.s_invoice_subsets = tk.StringVar()
+        self.l_invoice_subsets = tk.Entry(self.window, text=self.s_invoice_subsets)
         self.l_invoice_subsets.grid(row=8, column=1)
 
         self.window.grid_rowconfigure(9, minsize=15)
@@ -130,8 +132,9 @@ class Maestro():
             price_subsets = set([tuple(s) for s in self.subsets_with_sum(prices, price_sum)])
             invoice_subsets = [tuple(references[p] for p in ps) for ps in price_subsets]
 
-            self.l_price_subsets['text'] = str(price_subsets) if len(price_subsets) else '()'
-            self.l_invoice_subsets['text'] = str(invoice_subsets)
+            s_price_subset = str(price_subsets) if len(price_subsets) else '()'
+            self.s_price_subsets.set(s_price_subset)
+            self.s_invoice_subsets.set(str(invoice_subsets))
 
             end = datetime.datetime.now()
             self.l_calculate_time['text'] = str(end - start)
