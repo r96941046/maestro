@@ -15,6 +15,8 @@ class Maestro():
 
         self.window = tk.Tk()
 
+        self.window.title('Maestro')
+
         tk.Label(self.window, text="Excel file").grid(row=0, column=0)
         tk.Label(self.window, text="Column number of the price").grid(row=1, column=0)
         tk.Label(self.window, text="Column number of the invoice").grid(row=2, column=0)
@@ -41,11 +43,43 @@ class Maestro():
         self.e_target = tk.Entry(self.window)
         self.e_target.grid(row=3, column=1)
 
+        self.window.grid_rowconfigure(4, minsize=15)
+
+        tk.Label(self.window, text="Total valid rows").grid(row=5, column=0)
+        self.l_valid_rows = tk.Label(self.window, text="")
+        self.l_valid_rows.grid(row=5, column=1)
+
+        tk.Label(self.window, text="Calculate time").grid(row=6, column=0)
+        self.l_calculate_time = tk.Label(self.window, text="")
+        self.l_calculate_time.grid(row=6, column=1)
+
+        tk.Label(self.window, text="Price subsets").grid(row=7, column=0)
+        self.l_price_subsets = tk.Label(self.window, text="")
+        self.l_price_subsets.grid(row=7, column=1)
+
+        tk.Label(self.window, text="Invoice subsets").grid(row=8, column=0)
+        self.l_invoice_subsets = tk.Label(self.window, text="")
+        self.l_invoice_subsets.grid(row=8, column=1)
+
+        self.window.grid_rowconfigure(9, minsize=15)
+
+        self.s_calculate = tk.StringVar()
+        self.s_calculate.set('Calculate')
+        self.b_calculate = tk.Button(self.window, text=self.s_calculate.get(), command=self.calculate)
+        self.b_calculate.grid(row=10, column=0)
+
+        self.b_cancel = tk.Button(self.window, text='Cancel', command=self.cancel)
+        self.b_cancel.grid(row=10, column=1)
+
         self.window.mainloop()
 
     def browse(self):
 
         self.s_filename.set(askopenfilename())
+
+    def cancel(self):
+
+        self.window.destroy()
 
     def subsets_with_sum(self, lst, target):
 
@@ -75,7 +109,7 @@ class Maestro():
         except ValueError:
             print('Target price must be a number.')
 
-        with open(self.s_filename.get()) as f:
+        with open(self.s_filename.get(), 'rb') as f:
 
             wb = load_workbook(f)
             ws = wb.get_active_sheet()
@@ -91,17 +125,16 @@ class Maestro():
                     references[price].append(invoice)
 
             prices.sort()
-            print(len(prices))
-            print(prices)
+            self.l_valid_rows['text'] = str(len(prices))
 
             price_subsets = set([tuple(s) for s in self.subsets_with_sum(prices, price_sum)])
             invoice_subsets = [tuple(references[p] for p in ps) for ps in price_subsets]
 
-            print(price_subsets)
-            print(invoice_subsets)
+            self.l_price_subsets['text'] = str(price_subsets) if len(price_subsets) else '()'
+            self.l_invoice_subsets['text'] = str(invoice_subsets)
 
             end = datetime.datetime.now()
-            print('Time lapsed: ' + str(end - start))
+            self.l_calculate_time['text'] = str(end - start)
 
 
 if __name__ == '__main__':
