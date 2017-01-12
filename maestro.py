@@ -17,7 +17,7 @@ class Maestro():
 
         self.window.title('Maestro')
 
-        tk.Label(self.window, text="Excel file").grid(row=0, column=0)
+        tk.Label(self.window, text="Excel file (must in .xlsx)").grid(row=0, column=0)
         tk.Label(self.window, text="Column number of the price").grid(row=1, column=0)
         tk.Label(self.window, text="Column number of the invoice").grid(row=2, column=0)
         tk.Label(self.window, text="Target price").grid(row=3, column=0)
