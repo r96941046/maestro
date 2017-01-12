@@ -1,4 +1,11 @@
 from distutils.core import setup
 import py2exe
+import sys
 
-setup(console=['maestro.py'])
+sys.argv.append('py2exe')
+
+setup(
+    options={'py2exe': {'bundle_files': 1, 'compressed': True}},
+    windows=[{'script': 'maestro.py'}],
+    zipfile=None
+)
